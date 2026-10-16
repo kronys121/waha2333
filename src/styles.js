@@ -79,7 +79,7 @@ const cartoon = {
       craterRim: '#78584a', rubble: '#3a2c26', bone: '#efe2c4', fire1: '#e8462a', fire2: '#ffa22a', fire3: '#fff07a', ember: '#ffd27a',
     },
   },
-  marine: { armor: '#2d5bd1', armorDark: '#1f3f96', trim: '#f2c230', dark: '#2a2a33', metal: '#7d8796', gun: '#3d3f48', gunDark: '#26272e', lens: '#ff3b2f', grille: '#888', mark: '#ffffff' },
+  marine: { armor: '#2d5bd1', armorDark: '#1f3f96', trim: '#f2c230', dark: '#2a2a33', metal: '#7d8796', gun: '#3d3f48', gunDark: '#26272e', lens: '#ff3b2f', grille: '#888', mark: '#ffffff', ribs: '#4a4a58' },
   kid: { skin: '#f0b98a', hair: '#3b2a1e', cloth: '#8a6d4a', cloth2: '#c0392b', patch: '#6e5539', pants: '#4f5a64', boots: '#2e2620', belt: '#3a2e26', lens: '#7fd3ff', metal: '#8b939e', ink: '#1a1a1a', dirt: 'rgba(90,60,40,0.4)' },
   figure: {
     outline: '#15131a', outlineW: 6, glow: '#ff6a4a',
@@ -139,7 +139,7 @@ const grimdark = {
       craterRim: '#2a1c16', rubble: '#0c0807', bone: '#9a8c74', fire1: '#a8200e', fire2: '#e86a1a', fire3: '#ffd27a', ember: '#ff8a3a',
     },
   },
-  marine: { armor: '#1b2a4a', armorDark: '#101a30', trim: '#8a6a2a', dark: '#111116', metal: '#3a3e44', gun: '#1c1d22', gunDark: '#0f1013', lens: '#ff2a1a', grille: '#55504a', mark: '#c8c0b0' },
+  marine: { armor: '#1b2a4a', armorDark: '#101a30', trim: '#8a6a2a', dark: '#111116', metal: '#3a3e44', gun: '#1c1d22', gunDark: '#0f1013', lens: '#ff2a1a', grille: '#55504a', mark: '#c8c0b0', ribs: '#2a2a32' },
   kid: { skin: '#9c7a62', hair: '#1a120c', cloth: '#3e3426', cloth2: '#5a1a14', patch: '#2e261c', pants: '#242a2e', boots: '#121010', belt: '#1a1612', lens: '#6a9a80', metal: '#4a4e54', ink: '#0a0806', dirt: 'rgba(20,14,10,0.6)' },
   figure: {
     glow: '#ff2a1a',

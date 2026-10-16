@@ -19,7 +19,7 @@ function renderFrame(styleId, sceneId, t) {
       drawFigure(c, window.FIGURES.kid, st.kid, 720, 965, 1.45, st.figure);
     } else {
       shadowEllipse(c, 960, 1010, 260, 'rgba(0,0,0,0.45)');
-      drawFigure(c, window.FIGURES.marine, st.marine, 960, 1000, 1.2, st.figure);
+      drawFigure(c, window.FIGURES.marine, st.marine, 960, 1005, 1.15, st.figure);
     }
   };
 
@@ -39,7 +39,7 @@ function renderFrame(styleId, sceneId, t) {
     paintWorld(ctx);
   }
   if (st.post) st.post(ctx, sc);
-  st.ui(ctx, sc);
+  if (!window.__noUi) st.ui(ctx, sc);
 }
 
 (async () => {
@@ -50,6 +50,7 @@ function renderFrame(styleId, sceneId, t) {
   await document.fonts.load('italic 700 40px "Old Standard TT"', 'Яя0123456789+');
   await document.fonts.load('40px "Ruslan Display"', 'Яя0123456789+');
   await document.fonts.load('40px "Press Start 2P"', 'Яя0123456789+');
+  window.__noUi = q.get('ui') === '0';
   renderFrame(q.get('style') || 'cartoon', q.get('scene') || 'hive', parseFloat(q.get('t') || '1'));
   window.__ready = true;
 })();

@@ -28,5 +28,12 @@ for (const style of ['cartoon', 'grimdark', 'pixel']) {
     console.log('ok', style, scene);
   }
 }
+// clean character close-ups without UI
+for (const style of ['cartoon', 'grimdark']) {
+  await page.goto(`http://localhost:${port}/src/index.html?style=${style}&scene=battle&t=1.3&ui=0`);
+  await page.waitForFunction(() => window.__ready === true);
+  await page.screenshot({ path: join(root, 'style', `${style}-marine-clean.png`), clip: { x: 560, y: 220, width: 800, height: 860 } });
+  console.log('ok clean', style);
+}
 await browser.close();
 server.close();
