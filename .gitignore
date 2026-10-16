@@ -1,4 +1,4 @@
 node_modules/
 out/
-frames/
 *.mp4
+!video/part*.mp4
