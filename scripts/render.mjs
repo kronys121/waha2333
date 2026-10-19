@@ -3,6 +3,7 @@
 // skipped on re-run, so an interrupted render resumes where it stopped.
 //   node scripts/render.mjs              all parts, 2 chunks at a time
 //   node scripts/render.mjs 3 5 --jobs 1 only parts 3 and 5
+//   node scripts/render.mjs --page horus/index.html   the Horus video (horus/video/partNN.mp4)
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
 import { mkdir, rename, writeFile, access } from 'node:fs/promises';
@@ -14,9 +15,11 @@ const CHUNK = 1500; // frames per chunk
 const args = process.argv.slice(2);
 const jobsIdx = args.indexOf('--jobs');
 const jobs = jobsIdx >= 0 ? Number(args[jobsIdx + 1]) : 2;
-const wanted = args.filter((a, i) => /^\d+$/.test(a) && i !== jobsIdx + 1).map(Number);
+const pageIdx = args.indexOf('--page');
+const pagePath = pageIdx >= 0 ? args[pageIdx + 1] : 'src/video/index.html';
+const wanted = args.filter((a, i) => /^\d+$/.test(a) && i !== jobsIdx + 1 && i !== pageIdx + 1).map(Number);
 const exists = (p) => access(p).then(() => true, () => false);
-const chunkDir = join(root, 'out', 'chunks');
+const chunkDir = join(root, 'out', pagePath.startsWith('horus') ? 'chunks_horus' : 'chunks');
 
 function run(cmd, argv, opts = {}) {
   const p = spawn(cmd, argv, { stdio: ['pipe', 'inherit', 'inherit'], ...opts });
@@ -25,23 +28,24 @@ function run(cmd, argv, opts = {}) {
 }
 
 const { server, port } = await serve();
-const url = `http://localhost:${port}/src/video/index.html`;
+const url = `http://localhost:${port}/${pagePath}`;
 
 // part boundaries: the start of every level card shot
 const probeBrowser = await chromium.launch();
 const probe = await probeBrowser.newPage();
 await probe.goto(url);
 await probe.waitForFunction(() => window.__ready === true);
-const { cuts, end } = await probe.evaluate(() => {
+const { cuts, end, audio, outPrefix } = await probe.evaluate(() => {
   const idx = [0, 73, 131, 189, 232, 284, 340, 392];
-  return { cuts: idx.map((i) => (i === 0 ? 0 : window.CUES[i] - 0.15)), end: window.END_TIME };
+  const cuts = window.LEVEL_STARTS || idx.map((i) => (i === 0 ? 0 : window.CUES[i] - 0.15));
+  return { cuts, end: window.END_TIME, audio: window.AUDIO || 'audio/narration.mp3', outPrefix: window.OUT_PREFIX || 'video/part' };
 });
 await probeBrowser.close();
 const frameOf = (t) => Math.round(t * FPS);
 let parts = cuts.map((c, i) => ({ n: i + 1, f0: frameOf(c), f1: frameOf(i + 1 < cuts.length ? cuts[i + 1] : end) }));
 if (wanted.length) parts = parts.filter((p) => wanted.includes(p.n));
 await mkdir(chunkDir, { recursive: true });
-await mkdir(join(root, 'video'), { recursive: true });
+await mkdir(join(root, outPrefix, '..'), { recursive: true });
 
 // chunk list
 const chunks = [];
@@ -90,9 +94,9 @@ for (const p of parts) {
   const list = join(chunkDir, `p${p.n}.txt`);
   await writeFile(list, p.chunks.map((c) => `file '${c.file}'`).join('\n') + '\n');
   const start = p.f0 / FPS, dur = (p.f1 - p.f0) / FPS;
-  const out = join(root, 'video', `part${String(p.n).padStart(2, '0')}.mp4`);
+  const out = join(root, `${outPrefix}${String(p.n).padStart(2, '0')}.mp4`);
   await run('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list,
-    '-ss', start.toFixed(3), '-t', dur.toFixed(3), '-i', join(root, 'audio', 'narration.mp3'),
+    '-ss', start.toFixed(3), '-t', dur.toFixed(3), '-i', join(root, audio),
     '-filter_complex', '[1:a]apad[a]', '-map', '0:v', '-map', '[a]',
     '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', dur.toFixed(3), '-movflags', '+faststart', out]).done;
   console.log(`assembled ${out}`);

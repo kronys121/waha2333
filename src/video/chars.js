@@ -199,6 +199,13 @@ const HUMAN_PAL = {
 function buildMarine(o = {}) {
   const parts = [];
   const add = (role, path, g, extra) => parts.push({ role, path, g, ...extra });
+  if (o.wings) {
+    for (const s of [-1, 1]) {
+      const w = [[60, -500], [260, -760], [420, -820], [520, -760], [470, -640], [520, -600], [430, -520], [470, -470], [360, -420], [380, -360], [240, -360], [120, -420]];
+      add('wing', poly(w.map(([x, y]) => [s * x, y])));
+      for (let i = 0; i < 4; i++) add('wingShade', poly([[s * (180 + i * 70), -560 + i * 40], [s * (300 + i * 60), -700 + i * 60], [s * (320 + i * 60), -640 + i * 60]]), null, { flat: true });
+    }
+  }
   if (o.cape) add('cape', poly([[-200, -480], [200, -480], [262, -30], [150, -10], [0, -40], [-150, -10], [-262, -30]]));
   add('armorDark', rr(-150, -545, 300, 150, 26));
   for (const x of [-125, 85]) { add('metal', rr(x, -615, 40, 90, 10)); add('dark', rr(x - 4, -622, 48, 18, 6)); }
@@ -224,8 +231,17 @@ function buildMarine(o = {}) {
   add('dark', el(0, -293, 13, 12));
   add('armor', poly([[-135, -478], [135, -478], [126, -392], [74, -365], [-74, -365], [-126, -392]]));
   const wing = [[-10, -452], [-118, -462], [-104, -444], [-120, -434], [-100, -424], [-112, -412], [-88, -406], [-96, -394], [-56, -396], [-10, -412]];
-  add('trim', poly(wing)); add('trim', poly(mirror(wing)));
-  add('trim', poly([[-16, -470], [-4, -480], [0, -455], [4, -480], [16, -470], [12, -420], [0, -402], [-12, -420]]));
+  if (o.eye) {
+    // Eye of Horus across the chest
+    const ep = P(); ep.moveTo(-90, -430); ep.quadraticCurveTo(0, -500, 90, -430); ep.quadraticCurveTo(0, -370, -90, -430); ep.closePath();
+    add('trim', ep);
+    add('eyeIris', el(0, -432, 26, 26), null, { glow: o.eyeGlow });
+    add('dark', el(0, -432, 11, 11));
+    add('trim', poly([[-30, -398], [-14, -398], [-24, -360], [-44, -350]]));
+  } else {
+    add('trim', poly(wing)); add('trim', poly(mirror(wing)));
+    add('trim', poly([[-16, -470], [-4, -480], [0, -455], [4, -480], [16, -470], [12, -420], [0, -402], [-12, -420]]));
+  }
 
   const armed = o.weapon === 'bolter';
   // arms
@@ -246,10 +262,13 @@ function buildMarine(o = {}) {
   add('armorDark', poly([[-72, -505], [72, -505], [82, -462], [-82, -462]]));
   if (o.helmet === 'off') {
     const hc = -548;
+    if (o.hair === 'long') add('hair', rr(-64, hc - 50, 128, 150, 40), 'head');
     add('skin', rr(-26, -515, 52, 50, 8), 'head');
     add('skin', el(0, hc, 52, 60), 'head');
     add('skin', el(-52, hc + 6, 11, 16), 'head'); add('skin', el(52, hc + 6, 11, 16), 'head');
-    if (o.hair !== 'bald') {
+    if (o.hair === 'topknot') {
+      add('hair', poly([[-10, hc - 58], [10, hc - 58], [22, hc - 110], [8, hc - 150], [-4, hc - 120]]), 'head');
+    } else if (o.hair !== 'bald') {
       const hp = P();
       hp.moveTo(-54, hc - 6);
       hp.bezierCurveTo(-58, hc - 84, 58, hc - 84, 54, hc - 6);
@@ -257,7 +276,23 @@ function buildMarine(o = {}) {
       add('hair', hp, 'head');
     }
     if (o.beard) add('hair', poly([[-40, hc + 10], [40, hc + 10], [30, hc + 52], [0, hc + 64], [-30, hc + 52]]), 'head');
-    add('face', null, 'head', { fn: (ctx, pose) => drawFace(ctx, { cx: 0, cy: hc + 6, r: 52 }, pose) });
+    if (o.cyclops) add('face', null, 'head', { fn: (ctx, pose) => {
+      ctx.fillStyle = '#fff'; ctx.strokeStyle = '#15131a'; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.ellipse(0, hc - 2, 22, 16 * (1 - (pose.blink || 0) * 0.9), 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#d0a020'; ctx.beginPath(); ctx.arc(0, hc - 2, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-16, hc + 34); ctx.lineTo(16, hc + 34); ctx.stroke();
+    } });
+    else add('face', null, 'head', { fn: (ctx, pose) => drawFace(ctx, { cx: 0, cy: hc + 6, r: 52 }, pose) });
+    if (o.tattoo) add('tattoo', null, 'head', { fn: (ctx) => {
+      ctx.strokeStyle = '#3a2a5a'; ctx.lineWidth = 3;
+      for (let i = 0; i < 7; i++) { ctx.beginPath(); ctx.moveTo(-40 + i * 13, hc - 50); ctx.lineTo(-44 + i * 13, hc - 20); ctx.stroke(); }
+      ctx.beginPath(); ctx.moveTo(-36, hc + 10); ctx.lineTo(-30, hc + 40); ctx.moveTo(36, hc + 10); ctx.lineTo(30, hc + 40); ctx.stroke();
+    } });
+    if (o.glowEyes) add('glowEyes', null, 'head', { fn: (ctx) => {
+      ctx.fillStyle = '#ff3a1a'; ctx.shadowColor = '#ff3a1a'; ctx.shadowBlur = 25;
+      ctx.beginPath(); ctx.ellipse(-19, hc + 4, 9, 6, 0, 0, Math.PI * 2); ctx.ellipse(19, hc + 4, 9, 6, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+    } });
     if (o.scar) add('scar', null, 'head', { fn: (ctx) => { ctx.strokeStyle = '#a0463c'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(16, hc - 34); ctx.lineTo(34, hc + 22); ctx.stroke(); } });
     if (o.laurel) {
       for (const s of [-1, 1]) for (let i = 0; i < 5; i++) {
@@ -315,9 +350,13 @@ function buildMarine(o = {}) {
     om.bezierCurveTo(-166, -480, -166, -516, -186, -516);
     om.bezierCurveTo(-206, -516, -206, -480, -186, -470);
     om.lineTo(-186, -452); om.lineTo(-218, -452); om.closePath();
-    add(o.horns ? 'trim' : 'mark', o.horns ? poly([[-186, -540], [-176, -500], [-140, -496], [-176, -488], [-186, -450], [-196, -488], [-232, -496], [-196, -500]]) : om);
+    if (o.horns || !o.plain) add(o.horns ? 'trim' : 'mark', o.horns ? poly([[-186, -540], [-176, -500], [-140, -496], [-176, -488], [-186, -450], [-196, -488], [-232, -496], [-196, -500]]) : om);
   }
-  add('mark', poly([[149, -462], [186, -522], [223, -462], [205, -462], [186, -494], [167, -462]]));
+  if (!o.plain) add('mark', poly([[149, -462], [186, -522], [223, -462], [205, -462], [186, -494], [167, -462]]));
+  if (o.spikes) for (const sx of [-1, 1]) for (let i = 0; i < 3; i++) {
+    const bx = sx * (130 + i * 52), by = -548 + Math.abs(i - 1) * 12;
+    add('bone', poly([[bx - 12, by + 8], [bx + sx * 10, by - 70 - i * 6], [bx + 12, by + 8]]));
+  }
 
   if (armed) {
     const gm = new DOMMatrix().translate(-5, -270).rotate(-24);

@@ -1,5 +1,5 @@
 // Render single frames for review: node scripts/preview.mjs 12.5 40 ... -> out/preview/t<time>.png
-// With --sheet, also writes out/preview/sheet.png (grid of all requested frames).
+// With --sheet, also writes out/preview/sheet.png (grid of all requested frames). --page horus/index.html for the Horus video.
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -7,7 +7,9 @@ import { serve, root } from './serve.mjs';
 
 const args = process.argv.slice(2);
 const sheet = args.includes('--sheet');
-const times = args.filter((a) => a !== '--sheet').map(Number);
+const pageIdx = args.indexOf('--page');
+const pagePath = pageIdx >= 0 ? args[pageIdx + 1] : 'src/video/index.html';
+const times = args.filter((a, i) => a !== '--sheet' && i !== pageIdx && i !== pageIdx + 1).map(Number);
 const outDir = join(root, 'out', 'preview');
 await mkdir(outDir, { recursive: true });
 const { server, port } = await serve();
@@ -15,7 +17,7 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 page.on('pageerror', (e) => console.error('pageerror', e.message));
 page.on('console', (m) => { if (m.type() === 'error') console.error('console', m.text()); });
-await page.goto(`http://localhost:${port}/src/video/index.html`);
+await page.goto(`http://localhost:${port}/${pagePath}`);
 await page.waitForFunction(() => window.__ready === true);
 const files = [];
 for (const t of times) {
