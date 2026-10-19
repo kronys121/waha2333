@@ -2,3 +2,4 @@ node_modules/
 out/
 *.mp4
 !video/part*.mp4
+!horus/video/part*.mp4
