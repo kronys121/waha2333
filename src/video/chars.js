@@ -53,6 +53,15 @@ function drawFace(ctx, f, pose) {
     ctx.lineTo(cx + s * (ex + r * 0.2), by + outer);
     ctx.stroke();
   }
+  if (pose.nose) {
+    ctx.lineWidth = r * 0.06; ctx.beginPath(); ctx.moveTo(cx + r * 0.02, ey + r * 0.05); ctx.quadraticCurveTo(cx + r * 0.16, ey + r * 0.3, cx - r * 0.04, ey + r * 0.32); ctx.stroke();
+  }
+  if (pose.wrinkles) {
+    ctx.lineWidth = r * 0.03; ctx.strokeStyle = 'rgba(21,19,26,0.6)';
+    for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(cx + s * r * 0.55, ey + r * 0.05); ctx.lineTo(cx + s * r * 0.7, ey + r * 0.12); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(cx - r * 0.3, ey - r * 0.55); ctx.lineTo(cx + r * 0.3, ey - r * 0.55); ctx.stroke();
+    ctx.strokeStyle = '#15131a';
+  }
   const my = cy + r * 0.45;
   ctx.lineWidth = r * 0.08;
   ctx.beginPath();

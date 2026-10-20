@@ -19,7 +19,7 @@ const pageIdx = args.indexOf('--page');
 const pagePath = pageIdx >= 0 ? args[pageIdx + 1] : 'src/video/index.html';
 const wanted = args.filter((a, i) => /^\d+$/.test(a) && i !== jobsIdx + 1 && i !== pageIdx + 1).map(Number);
 const exists = (p) => access(p).then(() => true, () => false);
-const chunkDir = join(root, 'out', pagePath.startsWith('horus') ? 'chunks_horus' : 'chunks');
+const chunkDir = join(root, 'out', pagePath.startsWith('src') ? 'chunks' : 'chunks_' + pagePath.split('/')[0]);
 
 function run(cmd, argv, opts = {}) {
   const p = spawn(cmd, argv, { stdio: ['pipe', 'inherit', 'inherit'], ...opts });
