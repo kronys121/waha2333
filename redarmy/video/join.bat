@@ -1,5 +1,5 @@
 @echo off
-rem Join the parts into one video. Needs ffmpeg in PATH. Double-click or run from this folder.
+rem Join the 16 parts into one video. Needs ffmpeg in PATH. Double-click or run from this folder.
 rem If narration.mp3 is found (here or in ..\audio) the sound is taken from it, otherwise from the parts.
 cd /d "%~dp0"
 set AUDIO=
