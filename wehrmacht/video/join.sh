@@ -1,5 +1,5 @@
 #!/bin/sh
-# Join the parts into one video. Needs ffmpeg. Run: sh join.sh
+# Join the 11 parts into one video. Needs ffmpeg. Run: sh join.sh
 # If narration.mp3 is found (here or in ../audio) the sound is taken from it, otherwise from the parts.
 cd "$(dirname "$0")"
 AUDIO=""
