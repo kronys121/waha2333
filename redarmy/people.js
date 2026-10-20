@@ -24,7 +24,7 @@ function buildSoldier(o = {}) {
   const add = (role, path, g, extra) => parts.push({ role, path, g, ...extra });
   const torsoTop = -340, torsoBot = -185, sh = 64, headR = 46, headCy = -396;
   const hairTop = headCy - headR * 1.08;
-  const gun = o.weapon === 'rifle' || o.weapon === 'ppsh';
+  const gun = o.weapon === 'rifle' || o.weapon === 'ppsh' || o.weapon === 'mp40';
 
   if (o.bag) add('bag', el(0, torsoTop + 90, 78, 92));
   // legs
@@ -124,6 +124,12 @@ function buildSoldier(o = {}) {
         sf(rr(20, -14, 240, 9, 3), col.metal);
         sf(rr(-40, -20, 46, 10, 3), col.metal);
         if (pose.bayonet) sf(poly([[258, -14], [330, -11], [258, -8]]), '#c9ced6');
+      } else if (o.weapon === 'mp40') {
+        sf(poly([[-120, -6], [-30, -10], [-30, 10], [-120, 18]]), col.metal);
+        sf(rr(-34, -14, 150, 22, 6), col.metal);
+        sf(rr(110, -8, 60, 9, 3), col.metal);
+        sf(rr(16, 6, 16, 70, 3), col.metal);
+        sf(rr(-20, 6, 20, 34, 4), '#3a2a1a');
       } else {
         sf(poly([[-150, -4], [-40, -14], [70, -12], [70, 12], [-40, 16], [-150, 26]]), col.wood);
         sf(rr(60, -14, 120, 22, 6), col.metal);
@@ -131,7 +137,7 @@ function buildSoldier(o = {}) {
         sf(el(20, 34, 36, 36), col.metal);
       }
       if (pose.fire) {
-        const L = o.weapon === 'rifle' ? 266 : 186;
+        const L = o.weapon === 'rifle' ? 266 : o.weapon === 'mp40' ? 176 : 186;
         const fl = (Math.floor((pose.time || 0) * 15) % 2) ? 1 : 0.6;
         ctx.fillStyle = '#ffe28a'; ctx.strokeStyle = '#ff8a2a'; ctx.lineWidth = 5;
         ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2, r = (i % 2 ? 18 : 60) * fl; ctx.lineTo(L + 40 + Math.cos(a) * r * 1.4, Math.sin(a) * r * 0.7); } ctx.closePath(); ctx.fill(); ctx.stroke();
