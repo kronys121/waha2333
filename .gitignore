@@ -5,3 +5,5 @@ out/
 !horus/video/part*.mp4
 !redarmy/video/part*.mp4
 !wehrmacht/video/part*.mp4
+emperor/audio/*.wav
+!emperor/video/part*.mp4
