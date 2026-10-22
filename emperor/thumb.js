@@ -24,8 +24,8 @@ function drawThumb(ctx) {
     [345, 1050, 0.36, (x, y, s) => drawRig(ctx, rig('marine', { plain: true, weapon: 'bolter' }), x, y, s, { expr: 'grit' }, BRONZE)],
     [500, 1045, 0.62, (x, y, s) => { person(ctx, x - 20 * s, y, s, { expr: 'happy', armR: -0.8 }, { coat: true, hat: 'none' }, pal(EP.sage, { coat: '#f0ece0', shirt: '#f0ece0', pants: '#d8d0c0', hair: '#1a1008' })); capsulePod(ctx, x + 120 * s, y, 0.45 * s, 0, 3, false); }],
     [720, 1040, 0.58, (x, y, s) => { drawRig(ctx, ER({ wings: true }), x, y, s, { expr: 'neutral' }, WINGED); haloGlow(ctx, x, y - 560 * s, 130 * s); }],
-    [1010, 1035, 0.62, (x, y, s) => { throne(x, y, s * 1.1); drawRig(ctx, ER({ eyeGlow: true, glowEyes: true }), x, y, s, { bob: 60, expr: 'grit' }, SEER); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g2 = ctx.createRadialGradient(x, y - 420 * s, 10, x, y - 420 * s, 420 * s); g2.addColorStop(0, 'rgba(140,220,255,0.45)'); g2.addColorStop(1, 'rgba(140,220,255,0)'); ctx.fillStyle = g2; ctx.fillRect(x - 420 * s, y - 840 * s, 840 * s, 840 * s); ctx.restore(); }],
-    [1255, 1040, 0.92, (x, y, s) => { drawRig(ctx, ER({}), x, y, s, { expr: 'angry', armR: -2.6 }, WAR); sword(ctx, x + 175 * s, y - 470 * s, 0.75 * s, 0.1, 1, 3); }],
+    [1010, 1035, 0.62, (x, y, s) => { drawRig(ctx, ER({ eyeGlow: true, glowEyes: true }), x, y, s, { expr: 'grit', armL: 0.5, armR: -0.5 }, SEER); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g2 = ctx.createRadialGradient(x, y - 420 * s, 10, x, y - 420 * s, 420 * s); g2.addColorStop(0, 'rgba(140,220,255,0.45)'); g2.addColorStop(1, 'rgba(140,220,255,0)'); ctx.fillStyle = g2; ctx.fillRect(x - 420 * s, y - 840 * s, 840 * s, 840 * s); ctx.restore(); }],
+    [1255, 1040, 0.92, (x, y, s) => { drawRig(ctx, ER({}), x, y, s, { expr: 'angry', armR: -2.6 }, WAR); sword(ctx, x + 290 * s, y - 612 * s, 0.75 * s, 0.54, 1, 3); }],
     [1720, 1130, 1.5, (x, y, s) => { beam(ctx, x, y - 560 * s, 300, 900, 0.6); throne(x, y, s); drawRig(ctx, ER({}), x, y, s, { bob: 60, blink: 1, head: 0.06, expr: 'neutral' }, GOD); }],
   ];
   // biggest at the back, smallest in front
