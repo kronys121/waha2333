@@ -7,3 +7,5 @@ out/
 !wehrmacht/video/part*.mp4
 emperor/audio/*.wav
 !emperor/video/part*.mp4
+guard/audio/*.wav
+!guard/video/part*.mp4
