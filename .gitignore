@@ -8,4 +8,6 @@ out/
 emperor/audio/*.wav
 !emperor/video/part*.mp4
 guard/audio/*.wav
+orks/audio/*.wav
+!orks/video/part*.mp4
 !guard/video/part*.mp4
