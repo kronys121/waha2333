@@ -48,7 +48,7 @@ function orkFace(ctx, pose, c, f) {
   const blink = pose.blink ? 0.15 : 1;
   for (const d of [-1, 1]) {
     ctx.fillStyle = '#1a0806'; ctx.beginPath(); ctx.ellipse(d * 29, -14, 17, 12, 0, 0, 7); ctx.fill();
-    ctx.save(); ctx.shadowColor = c.eye; ctx.shadowBlur = 20; ctx.fillStyle = c.eye; ctx.beginPath(); ctx.ellipse(d * 29 + 2, -12, 10, 9 * blink, 0, 0, 7); ctx.fill(); ctx.restore();
+    ctx.save(); if (Math.hypot(ctx.getTransform().a, ctx.getTransform().b) > 0.45) { ctx.shadowColor = c.eye; ctx.shadowBlur = 20; } ctx.fillStyle = c.eye; ctx.beginPath(); ctx.ellipse(d * 29 + 2, -12, 10, 9 * blink, 0, 0, 7); ctx.fill(); ctx.restore();
     ctx.fillStyle = '#fff6c0'; ctx.fillRect(d * 29 + 4, -17, 4, 4 * blink);
   }
   // brow ridge: heavy V when angry, raised for shock/happy

@@ -111,10 +111,20 @@ function depth(ctx, st, k, fn) {
   const blur = k > 0.15 ? st.dof * k * 1.6 : k < 0 ? 5 + st.dof : 0;
   ctx.save();
   ctx.translate((st.cam.x - 960) * k, (st.cam.y - 540) * k * 0.5);
-  if (blur > 0.6) ctx.filter = `blur(${blur.toFixed(1)}px)`;
-  fn();
+  if (blur > 0.6 && fn.length) {
+    // a layer that takes its context: draw it whole on an offscreen canvas, then blur it once
+    const lc = layerCanvas().getContext('2d');
+    lc.setTransform(1, 0, 0, 1, 0, 0); lc.clearRect(0, 0, W, H); lc.setTransform(ctx.getTransform());
+    fn(lc);
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = `blur(${blur.toFixed(1)}px)`; ctx.drawImage(lc.canvas, 0, 0);
+  } else {
+    if (blur > 0.6) ctx.filter = `blur(${blur.toFixed(1)}px)`;
+    fn(ctx);
+  }
   ctx.restore();
 }
+let _layer = null;
+const layerCanvas = () => (_layer || (_layer = Object.assign(document.createElement('canvas'), { width: W, height: H })));
 
 // sound events: register in world time; music cues are read from the same list
 function sfx(t, name, gain = 1) { window.SFX.push([+t.toFixed(3), name, gain]); }

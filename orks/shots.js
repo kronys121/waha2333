@@ -17,14 +17,15 @@ const MEO = [
   { weapon: 'big', armour: 'eavy', pad: true, checks: true, scars: true, helm: 'horns', bulk: 0.5, pole: 1 },
   { weapon: 'kustom', armour: 'eavy', pad: true, checks: true, scars: true, helm: 'iron', bulk: 1, teethNeck: true, pole: 1 },
 ];
-function me(c, lvl, x, y, s, pose = {}, over = {}) {
+function me(c, lvl, x, y, s, pose = {}, over = {}, colOver) {
   if (lvl >= 6) {
     const o = lvl === 6 ? { pole: 2, helm: 'horns' } : lvl === 6.5 ? { pole: 2, helm: 'none', plate: true } : lvl === 7 ? { pole: 2, helm: 'none', plate: true, jaw: 'iron' } : { pole: 2, helm: 'none', plate: true, jaw: 'iron', cape: true };
-    return megaBoss(c, x, y, s * 0.8, pose, { ...o, ...over }, lvl >= 8 ? OKP.prophet : OKP.war);
+    return megaBoss(c, x, y, s * 0.8, pose, { ...o, ...over }, colOver || (lvl >= 8 ? OKP.prophet : OKP.war));
   }
   const col = lvl === 1 ? OKP2.yoof : lvl === 4 ? OKP.nob : lvl === 5 ? OKP.boss : OKP.boy;
-  orkX(c, x, y, s * (lvl === 1 ? 0.7 : 1), pose, { ...MEO[lvl], ...over }, col);
+  orkX(c, x, y, s * (lvl === 1 ? 0.7 : 1), pose, { ...MEO[lvl], ...over }, colOver || col);
 }
+const SIL = Object.fromEntries(Object.keys(OKP.boss).map((k) => [k, k === 'eye' ? '#ff3020' : '#14100c']));
 const shnyr = (c, x, y, s, pose = {}, o = {}) => grot(c, x, y, s * 0.75, pose, o);
 const gryz = (c, x, y, s, pose = {}, o = {}) => orkX(c, x, y, s * 1.1, pose, { weapon: 'big', armour: 'eavy', pad: true, helm: 'horns', bulk: 0.6, jaw: 'iron', ...o }, OKP2.gryz);
 const mek = (c, x, y, s, pose = {}) => orkX(c, x, y, s, pose, { weapon: 'none', helm: 'iron', pad: true }, OKP2.mek);
@@ -254,7 +255,7 @@ stage(30, [
 
 stage(31, [
   { set: (c, st) => { setScrap(c, st, { dusk: true, fire: [960, 960, 1.8] }); dim(c, 0.3); }, cam: [960, 700, 1.15], to: [960, 680, 1.3], look: 'night', draw: (c, st) => { for (let i = 0; i < 5; i++) oboy(c, 300 + i * 340 + (i > 1 ? 120 : 0), Y, 0.8, { ...pose.sit(st.t + i), ...(i === 1 ? talk(st) : {}), armL: i === 1 ? 2.2 : 0, armR: i === 1 ? -2.2 : 0, expr: i === 1 ? 'talk' : 'happy', flip: i > 2 }, i, { weapon: 'none' }); } },
-  { at: 'Истории всё', set: (c, st) => { setScrap(c, st, { dusk: true }); dim(c, 0.5); }, cam: [960, 600, 1.1], to: [960, 520, 1.2], look: 'night', draw: (c, st) => { c.save(); c.globalAlpha = 0.6; c.filter = 'brightness(0)'; me(c, 5, 960, 900, 1.2 + clamp(st.bt / 4) * 0.8, { ...ip(st) }); c.restore(); campfire2(c, 960, Y, 1.8, st.t); } },
+  { at: 'Истории всё', set: (c, st) => { setScrap(c, st, { dusk: true }); dim(c, 0.5); }, cam: [960, 600, 1.1], to: [960, 520, 1.2], look: 'night', draw: (c, st) => { c.save(); c.globalAlpha = 0.7; me(c, 5, 960, 900, 1.2 + clamp(st.bt / 4) * 0.8, { ...ip(st) }, {}, SIL); c.restore(); campfire2(c, 960, Y, 1.8, st.t); } },
   { at: 'Теперь ты ростом', set: (c, st) => setScrap(c, st, { dusk: true }), cam: TWO(820, 1100, Y, 1.2), to: [960, 560, 1.2], look: 'warm', draw: (c, st) => { doors(c, 1150, Y, 0.95, 2); me(c, 5, 820, Y, 1.1, { ...ip(st), expr: 'happy', armR: -0.8 }); } },
 ], { tr: 'black' });
 
@@ -318,7 +319,7 @@ stage(40, [
   { at: 'Он вызывает тебя', set: (c, st) => setSpace(c, st, {}), cam: [960, 600, 1.0], to: [960, 600, 1.1], look: 'cold', draw: (c, st) => { rok(c, 960, 1600, 2.6, st.t); me(c, 7, 720, 960, 0.8, ip(st)); megaBoss(c, 1250, 960, 0.75, { ...ip(st), flip: true, expr: 'roar' }, { helm: 'horns' }, OKP2.skarg); } },
   { at: 'Вы дерётесь три часа', set: (c, st) => setSpace(c, st, {}), cam: [960, 560, 1.2], to: [960, 540, 1.3], look: 'cold', shake: 3, draw: (c, st) => { const f = Math.sin(st.t * 1.2) * 40; me(c, 7, 820, 900 + f, 0.8, { klaw: Math.abs(Math.sin(st.t * 3)), lean: Math.sin(st.t * 0.9) * 0.4, expr: 'roar', time: st.t }); megaBoss(c, 1150, 900 - f, 0.75, { flip: true, lean: Math.cos(st.t * 0.9) * 0.4, expr: 'roar', time: st.t }, { helm: 'horns' }, OKP2.skarg); hitFX(c, 980, 560, 1, (st.bt % 1.1)); }, over: (c, st) => tCaption(c, 'Три часа', st.bt, 0.5, 2.5, 'без воздуха, без гравитации') },
   { at: 'В конце Скаргнаш', set: (c, st) => setSpace(c, st, {}), cam: WIDE, to: [1200, 400, 1.2], look: 'cold', draw: (c, st) => { const p = st.bt / 3; c.save(); c.translate(1000 + p * 900, 700 - p * 600); c.rotate(st.t * 3); megaBoss(c, 0, 400, 0.6 * (1 - p * 0.7), { expr: 'shock', time: st.t }, { helm: 'horns' }, OKP2.skarg); c.restore(); } },
-  { at: 'Говорят, он до сих пор', set: (c, st) => setSpace(c, st, {}), cam: WIDE, to: [960, 540, 1.1], look: 'cold', draw: (c, st) => { c.fillStyle = '#7a1a14'; c.beginPath(); c.arc(1500 + st.bt * 10, 260, 6, 0, 7); c.fill(); }, over: (c, st) => tLine(c, '...и ругается', st.bt, st.ph('и ругается') - st.lt + st.bt, 3, 900, 72) },
+  { at: 'Говорят, он до сих пор', set: (c, st) => setSpace(c, st, {}), cam: WIDE, to: [960, 540, 1.1], look: 'cold', draw: (c, st) => { c.save(); c.translate(1450 + st.bt * 20, 300); c.rotate(st.t * 2); megaBoss(c, 0, 60, 0.12, { expr: 'roar', time: st.t }, { helm: 'horns' }, OKP2.skarg); c.restore(); }, over: (c, st) => tLine(c, '...и ругается', st.bt, 0.6, 4, 900, 72) },
 ], { tr: 'cut' });
 
 stage(41, [
@@ -376,14 +377,14 @@ stage(47, [
 
 stage(48, [
   { set: (c, st) => { sky(c, '#2a0a08', '#e06030'); dustFX(c, st.t, 60, 4, '255,170,90'); }, cam: [960, 400, 1.0], to: [960, 420, 1.1], look: 'blood', draw: (c, st) => { for (let i = 0; i < 4; i++) smokeFX(c, 200 + i * 520, 900, st.t, 2.4, i, '30,20,18', 0.5); } },
-  { at: 'Тебе не страшно', set: (c, st) => { setBurnWorld(c, st); dim(c, 0.3); }, cam: [760, 860, 2.6], to: [760, 860, 3.0], look: 'blood', draw: (c, st) => me(c, 8, 760, Y, 1.0, { lean: -1.5, expr: 'happy' }) },
+  { at: 'Тебе не страшно', set: (c, st) => { setBurnWorld(c, st); dim(c, 0.3); }, cam: [200, 930, 2.4], to: [200, 920, 2.8], look: 'blood', draw: (c, st) => me(c, 8, 760, Y, 1.0, { lean: -1.5, expr: 'happy' }) },
   { at: 'Смерть это', set: (c) => fillBg(c, '#140a06'), cam: WIDE, to: [960, 540, 1.1], look: 'warm', draw: () => {}, over: (c, st) => tLine(c, 'Смерть это просто конец одной драки', st.bt, 0.3, 4, 540, 70) },
   { at: 'Твоё тело начинает', set: (c, st) => setBurnWorld(c, st), cam: [800, 760, 1.4], to: [900, 500, 1.2], look: 'gold', draw: (c, st) => { c.save(); c.globalAlpha = 1 - clamp(st.bt / 4) * 0.9; me(c, 8, 760, Y, 1.0, { lean: -1.5, blink: 1 }); c.restore(); c.save(); c.globalCompositeOperation = 'lighter'; c.globalAlpha = clamp(st.bt / 1.5); sporeFX(c, -st.t * 3, 180, 13, '170,255,110'); c.restore(); } },
   { at: 'Ветер уносит', set: (c, st) => setSpace(c, st, { planet: [1400, 600, 260] }), cam: [700, 540, 1.0], to: [1300, 560, 1.4], look: 'gold', draw: (c, st) => { c.save(); c.globalCompositeOperation = 'lighter'; c.translate(st.bt * 160, 0); sporeFX(c, st.t * 2, 120, 14, '170,255,110'); c.restore(); } },
 ], { tr: 'cut' });
 
 stage(49, [
-  { set: (c, st) => { setBurnWorld(c, st); dim(c, 0.35); }, cam: CU(980, Y, 0.7), to: [980, 740, 2.4], look: 'ash', draw: (c, st) => { shnyr(c, 980, Y, 1.4, { ...pose.sit(st.t), expr: 'sad', head: 0.15 + Math.sin(st.t * 3) * 0.03 }, { pole: 2 }); } },
+  { set: (c, st) => { setBurnWorld(c, st); dim(c, 0.35); }, cam: [980, 900, 2.0], to: [980, 880, 2.5], look: 'ash', draw: (c, st) => { shnyr(c, 980, Y, 1.4, { ...pose.sit(st.t), expr: 'sad', head: 0.15 + Math.sin(st.t * 3) * 0.03 }, { pole: 2 }); } },
 ], { tr: 'black' });
 
 stage(50, [

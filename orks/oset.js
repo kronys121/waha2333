@@ -139,52 +139,52 @@ function sky(ctx, top, bot) { fillBg(ctx, vg(ctx, -400, 900, [[0, top], [1, bot]
 // ---------- sets ----------
 function setCave(ctx, st, o = {}) {
   fillBg(ctx, vg(ctx, -400, 1100, [[0, '#0e0c0a'], [1, '#2a2218']]));
-  depth(ctx, st, 0.6, () => { for (let i = 0; i < 9; i++) { shape(ctx, [[-400 + i * 330, -400], [-330 + i * 330, 80 + (i % 3) * 80], [-260 + i * 330, -400]], '#1a1612', 5); } });
-  depth(ctx, st, 0.4, () => { const r = rng(4); for (let i = 0; i < 7; i++) mushroom(ctx, -300 + i * 420 + r() * 80, 860, 0.9 + r() * 0.8, ['#7a3a2a', '#5a6a3a', '#8a5a2a'][i % 3], '#d8c8a0', (r() - 0.5) * 0.2); });
+  depth(ctx, st, 0.6, (ctx) => { for (let i = 0; i < 9; i++) { shape(ctx, [[-400 + i * 330, -400], [-330 + i * 330, 80 + (i % 3) * 80], [-260 + i * 330, -400]], '#1a1612', 5); } });
+  depth(ctx, st, 0.4, (ctx) => { const r = rng(4); for (let i = 0; i < 7; i++) mushroom(ctx, -300 + i * 420 + r() * 80, 860, 0.9 + r() * 0.8, ['#7a3a2a', '#5a6a3a', '#8a5a2a'][i % 3], '#d8c8a0', (r() - 0.5) * 0.2); });
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(960, 820, 20, 960, 820, 800); g.addColorStop(0, `rgba(140,200,80,${o.glow ?? 0.25})`); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(BX0, BY0, BX1 - BX0, BY1 - BY0); ctx.restore();
   fillGround(ctx, 900, '#3a2e22', '#2a2218');
-  depth(ctx, st, -0.15, () => { for (let i = 0; i < 6; i++) { ctx.fillStyle = '#4a3a2a'; ctx.beginPath(); ctx.ellipse(-200 + i * 480, 960, 160, 30, 0, 0, 7); ctx.fill(); } });
+  depth(ctx, st, -0.15, (ctx) => { for (let i = 0; i < 6; i++) { ctx.fillStyle = '#4a3a2a'; ctx.beginPath(); ctx.ellipse(-200 + i * 480, 960, 160, 30, 0, 0, 7); ctx.fill(); } });
   sporeFX(ctx, st.t, 60, 3);
 }
 function setScrap(ctx, st, o = {}) {
   sky(ctx, o.dusk ? '#3a1a2a' : '#c8784a', o.dusk ? '#d0703a' : '#f0c890');
-  depth(ctx, st, 0.7, () => { for (let i = 0; i < 6; i++) shape(ctx, [[-400 + i * 520, 760], [-200 + i * 520, 420 + (i % 2) * 100], [60 + i * 520, 760]], o.dusk ? '#4a2a2a' : '#a86a4a', 5); });
-  depth(ctx, st, 0.45, () => { for (let i = 0; i < 5; i++) scrapHut(ctx, -250 + i * 640, 820, 0.8, i + 1); for (let i = 0; i < 3; i++) glyphBanner(ctx, 140 + i * 820, 820, 0.8, st.t + i); });
+  depth(ctx, st, 0.7, (ctx) => { for (let i = 0; i < 6; i++) shape(ctx, [[-400 + i * 520, 760], [-200 + i * 520, 420 + (i % 2) * 100], [60 + i * 520, 760]], o.dusk ? '#4a2a2a' : '#a86a4a', 5); });
+  depth(ctx, st, 0.45, (ctx) => { for (let i = 0; i < 5; i++) scrapHut(ctx, -250 + i * 640, 820, 0.8, i + 1); for (let i = 0; i < 3; i++) glyphBanner(ctx, 140 + i * 820, 820, 0.8, st.t + i); });
   fillGround(ctx, 820, '#8a6a4a', '#7a5a3a');
-  depth(ctx, st, -0.1, () => { for (let i = 0; i < 4; i++) scrapPlate(ctx, -100 + i * 640, 1040, 150, 60, '#6a5a4a', (i - 1.5) * 0.2); });
+  depth(ctx, st, -0.1, (ctx) => { for (let i = 0; i < 4; i++) scrapPlate(ctx, -100 + i * 640, 1040, 150, 60, '#6a5a4a', (i - 1.5) * 0.2); });
   if (o.fire) campfire2(ctx, o.fire[0], o.fire[1], o.fire[2] || 1.4, st.t);
 }
 function setWaste(ctx, st, o = {}) {
   sky(ctx, o.red ? '#4a1a14' : '#6a5a4a', o.red ? '#e07040' : '#c8a878');
-  if (o.red) depth(ctx, st, 0.85, () => { ctx.fillStyle = 'rgba(255,200,120,0.5)'; ctx.beginPath(); ctx.arc(1400, 260, 120, 0, 7); ctx.fill(); });
-  depth(ctx, st, 0.55, () => { wreck(ctx, 200, 780, 0.8, 0.15); wreck(ctx, 1700, 780, 0.9, -0.2, '#4a4a44'); for (let i = 0; i < 4; i++) smokeFX(ctx, 200 + i * 520, 760, st.t, 1.4, i, '50,44,40', 0.4); });
+  if (o.red) depth(ctx, st, 0.85, (ctx) => { ctx.fillStyle = 'rgba(255,200,120,0.5)'; ctx.beginPath(); ctx.arc(1400, 260, 120, 0, 7); ctx.fill(); });
+  depth(ctx, st, 0.55, (ctx) => { wreck(ctx, 200, 780, 0.8, 0.15); wreck(ctx, 1700, 780, 0.9, -0.2, '#4a4a44'); for (let i = 0; i < 4; i++) smokeFX(ctx, 200 + i * 520, 760, st.t, 1.4, i, '50,44,40', 0.4); });
   fillGround(ctx, 820, o.red ? '#6a3a24' : '#7a6a50', o.red ? '#5a2e1c' : '#6a5a42');
-  depth(ctx, st, -0.1, () => { for (let i = 0; i < 4; i++) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(-100 + i * 700, 1000, 200, 40, 0, 0, 7); ctx.fill(); } });
+  depth(ctx, st, -0.1, (ctx) => { for (let i = 0; i < 4; i++) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(-100 + i * 700, 1000, 200, 40, 0, 0, 7); ctx.fill(); } });
 }
 function setDoc(ctx, st) {
   fillBg(ctx, vg(ctx, -400, 1000, [[0, '#2a3a2a'], [1, '#4a5a3a']]));
-  depth(ctx, st, 0.5, () => { for (let i = 0; i < 6; i++) { rect(ctx, -200 + i * 450, 360, 160, 240, '#3a4a3a', 6, 5); for (let j = 0; j < 3; j++) { sfill(ctx, rr(-180 + i * 450 + j * 50, 400, 40, 70, 8), ['#9ac050', '#c05040', '#d0c060'][j], 4); } } for (let i = 0; i < 5; i++) { ctx.save(); ctx.translate(-100 + i * 520, 300); sfill(ctx, rr(-6, -200, 12, 200, 4), '#5a5e66', 3); sfill(ctx, el(0, 10, 40, 20), '#d0d4d8', 4); ctx.restore(); } });
+  depth(ctx, st, 0.5, (ctx) => { for (let i = 0; i < 6; i++) { rect(ctx, -200 + i * 450, 360, 160, 240, '#3a4a3a', 6, 5); for (let j = 0; j < 3; j++) { sfill(ctx, rr(-180 + i * 450 + j * 50, 400, 40, 70, 8), ['#9ac050', '#c05040', '#d0c060'][j], 4); } } for (let i = 0; i < 5; i++) { ctx.save(); ctx.translate(-100 + i * 520, 300); sfill(ctx, rr(-6, -200, 12, 200, 4), '#5a5e66', 3); sfill(ctx, el(0, 10, 40, 20), '#d0d4d8', 4); ctx.restore(); } });
   fillGround(ctx, 860, '#4a4a3a', '#3a3a2e');
-  depth(ctx, st, 0.1, () => { rect(ctx, 760, 760, 420, 40, '#8a8a7a', 6, 6); for (const d of [-1, 1]) rect(ctx, 970 + d * 170, 800, 20, 60, '#5a5e66', 4, 4); });
+  depth(ctx, st, 0.1, (ctx) => { rect(ctx, 760, 760, 420, 40, '#8a8a7a', 6, 6); for (const d of [-1, 1]) rect(ctx, 970 + d * 170, 800, 20, 60, '#5a5e66', 4, 4); });
 }
 function setMek(ctx, st) {
   fillBg(ctx, vg(ctx, -400, 1000, [[0, '#2a2420'], [1, '#5a4030']]));
-  depth(ctx, st, 0.5, () => { for (let i = 0; i < 7; i++) { scrapPlate(ctx, -300 + i * 420, 420, 300, 300, ['#5a5a52', '#6a5a4a'][i % 2], (i % 3 - 1) * 0.05); } for (let i = 0; i < 4; i++) { ctx.save(); ctx.translate(i * 640, 200); for (let k = 0; k < 4; k++) inkLine(ctx, [[-80 + k * 50, 0], [-80 + k * 50, 120 + (k % 2) * 40]], 4, '#2a2420'); ctx.restore(); } });
+  depth(ctx, st, 0.5, (ctx) => { for (let i = 0; i < 7; i++) { scrapPlate(ctx, -300 + i * 420, 420, 300, 300, ['#5a5a52', '#6a5a4a'][i % 2], (i % 3 - 1) * 0.05); } for (let i = 0; i < 4; i++) { ctx.save(); ctx.translate(i * 640, 200); for (let k = 0; k < 4; k++) inkLine(ctx, [[-80 + k * 50, 0], [-80 + k * 50, 120 + (k % 2) * 40]], 4, '#2a2420'); ctx.restore(); } });
   fillGround(ctx, 860, '#4a3a2a', '#3a2e22');
-  depth(ctx, st, 0.15, () => { rect(ctx, 600, 760, 720, 40, '#5a4a3a', 6, 6); });
+  depth(ctx, st, 0.15, (ctx) => { rect(ctx, 600, 760, 720, 40, '#5a4a3a', 6, 6); });
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; const r = rng(Math.floor(st.t * 8)); for (let i = 0; i < 14; i++) { ctx.fillStyle = 'rgba(255,220,120,0.9)'; ctx.fillRect(960 + (r() - 0.5) * 300, 700 + (r() - 0.5) * 120, 4, 4); } ctx.restore();
 }
 function setMine(ctx, st, o = {}) {
   sky(ctx, '#5a6a7a', '#c8c0a8');
-  depth(ctx, st, 0.65, () => { for (let i = 0; i < 6; i++) { const x = -200 + i * 520; rect(ctx, x, 300, 80, 460, '#6a6e74', 4, 6); shape(ctx, [[x - 60, 300], [x + 40, 200], [x + 140, 300]], '#5a5e64', 5); inkLine(ctx, [[x + 40, 200], [x + 300, 430]], 4); } });
-  depth(ctx, st, 0.4, () => { rect(ctx, -500, 600, 2920, 200, '#7a7e84', 0, 6); for (let i = 0; i < 18; i++) rect(ctx, -480 + i * 170, 560, 90, 50, '#7a7e84', 0, 5); aquila(ctx, 960, 680, 0.8); });
+  depth(ctx, st, 0.65, (ctx) => { for (let i = 0; i < 6; i++) { const x = -200 + i * 520; rect(ctx, x, 300, 80, 460, '#6a6e74', 4, 6); shape(ctx, [[x - 60, 300], [x + 40, 200], [x + 140, 300]], '#5a5e64', 5); inkLine(ctx, [[x + 40, 200], [x + 300, 430]], 4); } });
+  depth(ctx, st, 0.4, (ctx) => { rect(ctx, -500, 600, 2920, 200, '#7a7e84', 0, 6); for (let i = 0; i < 18; i++) rect(ctx, -480 + i * 170, 560, 90, 50, '#7a7e84', 0, 5); aquila(ctx, 960, 680, 0.8); });
   fillGround(ctx, 820, '#8a7a62', '#7a6a52');
 }
 function setSpaceO(ctx, st, o = {}) { setSpace(ctx, st, o); }
 function setBurnWorld(ctx, st, o = {}) {
   sky(ctx, '#1a0a08', '#c04a1a');
-  depth(ctx, st, 0.7, () => { for (let i = 0; i < 4; i++) { ctx.save(); ctx.globalAlpha = 0.85; gargant(ctx, -100 + i * 700, 820, 0.45, st.t * 0.3 + i, { walk: 0, burn: 1 }); ctx.restore(); } });
-  depth(ctx, st, 0.4, () => { for (let i = 0; i < 6; i++) { smokeFX(ctx, -200 + i * 460, 700, st.t, 2, i, '30,20,18', 0.55); fireFX(ctx, -100 + i * 460, 820, 1.4, st.t, i); } });
+  depth(ctx, st, 0.7, (ctx) => { for (let i = 0; i < 4; i++) { ctx.save(); ctx.globalAlpha = 0.85; gargant(ctx, -100 + i * 700, 820, 0.45, st.t * 0.3 + i, { walk: 0, burn: 1 }); ctx.restore(); } });
+  depth(ctx, st, 0.4, (ctx) => { for (let i = 0; i < 6; i++) { smokeFX(ctx, -200 + i * 460, 700, st.t, 2, i, '30,20,18', 0.55); fireFX(ctx, -100 + i * 460, 820, 1.4, st.t, i); } });
   fillGround(ctx, 840, '#3a2218', '#2a1810');
   dustFX(ctx, st.t, 50, 4, '255,170,90');
 }
