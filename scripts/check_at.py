@@ -11,12 +11,12 @@ bad = 0
 for m in re.finditer(r'stage\((\d+), \[(.*?)\n\], \{', shots, re.S):
     k = int(m.group(1)); t0 = PT(k); t1 = PT(k + 1) if k + 1 < len(PARA) else 1e9
     prev = t0
-    for ph in re.findall(r"at: '([^']+)'", m.group(2)):
+    for ph in re.findall(r"[{,] at: '([^']+)'", m.group(2)):
         f = next((C[i] for i in range(len(C)) if C[i] >= t0 - 0.5 and ph in T[i]), None)
         if f is None or f >= t1: print(f'stage {k}: "{ph}" not in paragraph'); bad += 1
         elif f < prev: print(f'stage {k}: "{ph}" out of order'); bad += 1
         else: prev = f
-    for ph in re.findall(r"st\.ph\('([^']+)'\)", m.group(2)):
+    for ph in re.findall(r"st\.ph\('([^']+)'\)", m.group(2)) + re.findall(r"at\(st, '([^']+)'\)", m.group(2)):
         f = next((C[i] for i in range(len(C)) if C[i] >= t0 - 0.5 and ph in T[i]), None)
         if f is None or f >= t1: print(f'stage {k}: ph "{ph}" not in paragraph'); bad += 1
 print('problems:', bad)
